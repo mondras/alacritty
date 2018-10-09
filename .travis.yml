@@ -32,3 +32,17 @@ script:
   - if [ -n "$CLIPPY" ]; then cargo clippy --all-features --all-targets; fi
   - if [ -z "$CLIPPY" ]; then cargo test; fi
   - if [ -z "$CLIPPY" ]; then cargo test -p font; fi
+
+after_success:
+  - test $TRAVIS_OS_NAME osx && make app && tar -czvf alacritty.tar.gz -C target/release/osx/ Alacritty.app
+
+deploy:
+  provider: releases
+  api_key:
+    secure: LrqrEBf+0O6/TG74FP+6WETSWUaHr+FTnsY9YCmSedArjska3j0xGCYNA2c6oJwDcXXDAHjjfnLThsj//Wd+HcR8fglsZdjgMQe39LrtVB0ZnH2dIXA8CrPWRh47xPHJwGAje21Nzkln874WiNcib9KbhTec+31EkeCXnkqJyGVGv9qoD1bzBxtojncG2UiK2C82Y6NdNZcqXo9gFev5nzG5T3610BigCry6VvTZs1IBhEbMj3jd0YBtjbpwc7roW7LfV9mYurx8YKEnNx1hy8VYFhZ6qG8zbVU+XzbyfIFBLOIhyY1uLqjn5ln8NVy54Hmy4doyy+QI5pR3+9m9g7eqEha7LLnoz/5ZTBaanXGzRQiPP2aCVsrGYIFunpUrYHNCjq4eZKRBhEwnBMv9HVxtsVgtlA0pJ+RZlIbnfuObBl50UT+ds+yoQCFUOWG7q0IMLN9Z2zaooG0VHOJ6sJQPSDmODekap7F9pLz8XEZ9cj+e1uOjUelfCuI67VMUoo3YRneGz7xM2l36JT9hgpdU+vB5MVv/BViJaNX+CdwP5g6BT2u/mvLsYLMxbLL8PKvK0wscE2hQaJg3vd5wV7uIqFPN6laviO3OqTnP6+x6jG8KokMOAgNeNcF6hrfWxnt3n//4Bu+Gvk+KsmuM3rgZDksgP8/g5t06B81hHYU=
+  file: 'alacritty.tar.gz'
+  skip_cleanup: true
+  on:
+    os: osx
+    repo: mondras/alacritty
+    branch: build-osx-app
